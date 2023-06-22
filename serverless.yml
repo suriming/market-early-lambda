@@ -1,0 +1,37 @@
+# service: serverless-logbert
+
+# provider:
+#   name: aws #cloud provider
+#   region: ap-northeast-2 
+#   memorySize: 2048 #memory usage
+#   timeout: 300 
+#   runtime: python3.8
+
+# functions:
+#   predict:
+#     image: 241314588014.dkr.ecr.ap-northeast-2.amazonaws.com/market-early-lambda@sha256:96783a5964d09ed85feb92f68b64f9cb8cd9eb6f9b562e45a1a84fdf38b08aa8  #PATH to model image - ecr_url@digest 
+#     events:
+#       - http:
+#           path: infer #url path
+#           method: post #request type
+
+service: serverless-logbert
+
+provider:
+  name: aws
+  region: ap-northeast-2
+  memorySize: 512
+  timeout: 30 
+  ecr:
+    images:
+      myImage:
+        uri: 241314588014.dkr.ecr.ap-northeast-2.amazonaws.com/market-early-lambda@sha256:96783a5964d09ed85feb92f68b64f9cb8cd9eb6f9b562e45a1a84fdf38b08aa8
+
+functions:
+  logbert:
+    image:
+      uri: ${self:provider.ecr.images.myImage.uri}
+    events:
+      - http:
+          path: predict
+          method: post
